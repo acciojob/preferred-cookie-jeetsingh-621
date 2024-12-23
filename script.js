@@ -1,34 +1,38 @@
- const savePreferences = () => {
-        const fontSize = document.getElementById("fontsize").value;
-        const fontColor = document.getElementById("fontcolor").value;
+// Save preferences in cookies
+document.querySelector("form").addEventListener("submit", (event) => {
+  event.preventDefault(); // Prevent form submission
 
-        // Save to localStorage
-        localStorage.setItem("fontsize", fontSize);
-        localStorage.setItem("fontcolor", fontColor);
+  const fontSize = document.getElementById("fontsize").value;
+  const fontColor = document.getElementById("fontcolor").value;
 
-        // Apply styles immediately
-        document.body.style.fontSize = `${fontSize}px`;
-        document.body.style.color = fontColor;
+  // Save cookies
+  document.cookie = `fontsize=${fontSize}; path=/`;
+  document.cookie = `fontcolor=${fontColor}; path=/`;
 
-        alert("Preferences saved!");
-      };
+  // Apply styles immediately
+  document.body.style.fontSize = `${fontSize}px`;
+  document.body.style.color = fontColor;
 
-      // Function to load preferences from localStorage
-      const loadPreferences = () => {
-        const savedFontSize = localStorage.getItem("fontsize") || 16;
-        const savedFontColor = localStorage.getItem("fontcolor") || "#000000";
+  alert("Preferences saved!");
+});
 
-        // Apply styles
-        document.body.style.fontSize = `${savedFontSize}px`;
-        document.body.style.color = savedFontColor;
+// Load preferences from cookies
+window.addEventListener("DOMContentLoaded", () => {
+  const cookies = document.cookie.split("; ");
+  const cookieMap = cookies.reduce((acc, cookie) => {
+    const [key, value] = cookie.split("=");
+    acc[key] = value;
+    return acc;
+  }, {});
 
-        // Update input fields
-        document.getElementById("fontsize").value = savedFontSize;
-        document.getElementById("fontcolor").value = savedFontColor;
-      };
+  const fontSize = cookieMap.fontsize || "16"; // Default font size
+  const fontColor = cookieMap.fontcolor || "#000000"; // Default font color
 
-      // Event listeners
-      document.getElementById("saveBtn").addEventListener("click", savePreferences);
+  // Apply saved preferences
+  document.body.style.fontSize = `${fontSize}px`;
+  document.body.style.color = fontColor;
 
-      // Load preferences on page load
-      window.addEventListener("DOMContentLoaded", loadPreferences);
+  // Update input fields
+  document.getElementById("fontsize").value = fontSize;
+  document.getElementById("fontcolor").value = fontColor;
+});
